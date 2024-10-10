@@ -1243,10 +1243,35 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3079811136129885495, guid: 34600599cf953476bbc466573f2a6b3b,
+        type: 3}
+      propertyPath: m_Drag
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3079811136129885495, guid: 34600599cf953476bbc466573f2a6b3b,
+        type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3079811136129885495, guid: 34600599cf953476bbc466573f2a6b3b,
+        type: 3}
+      propertyPath: m_CollisionDetection
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3942684795651464740, guid: 34600599cf953476bbc466573f2a6b3b,
         type: 3}
       propertyPath: m_Name
       value: Apple
+      objectReference: {fileID: 0}
+    - target: {fileID: 4816185443643780972, guid: 34600599cf953476bbc466573f2a6b3b,
+        type: 3}
+      propertyPath: force
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 4816185443643780972, guid: 34600599cf953476bbc466573f2a6b3b,
+        type: 3}
+      propertyPath: initialDirectionEffectMultiplier
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 6582375875922516110, guid: 34600599cf953476bbc466573f2a6b3b,
         type: 3}
@@ -1298,6 +1323,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6927636761783199106, guid: 34600599cf953476bbc466573f2a6b3b,
+        type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: 7944e71143cf9493b94767005b6f351a,
+        type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
