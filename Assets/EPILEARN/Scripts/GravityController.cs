@@ -113,6 +113,11 @@ public class GravityController : MonoBehaviour
     // Function to activate the gravity
     public void ActivateGravity()
     {
+        if (gravityOn)
+        {
+            ResetPosition();
+        }
+        
         gravityOn = true;
         AdjustGravity();
 
