@@ -2,6 +2,12 @@ using UnityEngine;
 
 public class GravityController : MonoBehaviour
 {
+    
+    [Header("Audio Settings")]
+    public AudioClip impactSound;      // Assign this in the Unity Inspector
+    private AudioSource audioSource;
+    private bool isFalling = false;
+    
     // Enum to represent different planets with varying gravity  
     public enum Planet
     {
@@ -36,6 +42,12 @@ public class GravityController : MonoBehaviour
         initialPosition = transform.position;
         // Initialize gravity based on selected planet  
         SetGravityState(gravityOn);
+        
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
     }
 
     void FixedUpdate()
@@ -47,6 +59,20 @@ public class GravityController : MonoBehaviour
 
             // Apply the computed local gravity to the Rigidbody  
             rb.AddForce(localGravity - Physics.gravity * rb.mass, ForceMode.Acceleration);
+            if (!isFalling && rb.velocity.y < -0.1f)
+            {
+                isFalling = true;
+               
+            }
+            // Stop falling sound if object is not falling anymore
+            else if (isFalling && rb.velocity.y > -0.1f)
+            {
+                isFalling = false;
+                if (audioSource.isPlaying)
+                {
+                    audioSource.Stop();
+                }
+            }
         }
         else if (rb == null)
         {
@@ -63,6 +89,18 @@ public class GravityController : MonoBehaviour
         if (gravityOn)
         {
             AdjustGravity();
+        }
+    }
+    
+    void OnCollisionEnter(Collision collision)
+    {
+        // Play impact sound when the object collides with something
+        if (impactSound != null && collision.relativeVelocity.magnitude > 1)
+        {
+            audioSource.Stop(); // Stop falling sound
+            audioSource.loop = false;
+            audioSource.clip = impactSound;
+            audioSource.Play();
         }
     }
 
@@ -166,5 +204,10 @@ public class GravityController : MonoBehaviour
 
         // Deactivate gravity
         DeactivateGravity();
+        if (audioSource != null && audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
+        isFalling = false;
     }
 }
