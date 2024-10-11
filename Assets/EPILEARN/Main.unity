@@ -1271,7 +1271,7 @@ PrefabInstance:
     - target: {fileID: 4816185443643780972, guid: 34600599cf953476bbc466573f2a6b3b,
         type: 3}
       propertyPath: initialDirectionEffectMultiplier
-      value: 0.25
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6582375875922516110, guid: 34600599cf953476bbc466573f2a6b3b,
         type: 3}
@@ -3856,7 +3856,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -254.6, y: -234}
+  m_AnchoredPosition: {x: -54.6, y: -234}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1479048416
@@ -4268,7 +4268,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -416.25, y: -234}
+  m_AnchoredPosition: {x: -216.25, y: -234}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1844408743

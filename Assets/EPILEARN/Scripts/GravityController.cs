@@ -22,6 +22,10 @@ public class GravityController : MonoBehaviour
     // Customize direction force
     public float initialDirectionEffectMultiplier;
 
+    public bool debugMode = true;
+    public float cameraOffset = 5f; // Distance from camera
+    private Camera mainCamera;
+    
     // Initial position to reset to
     private Vector3 initialPosition;
 
@@ -36,6 +40,31 @@ public class GravityController : MonoBehaviour
         initialPosition = transform.position;
         // Initialize gravity based on selected planet  
         SetGravityState(gravityOn);
+        
+        if (debugMode)
+        {
+            // Ensure the object is visible
+            AdjustCameraToSeeObject();
+            
+            // Log initial positions
+            Debug.Log($"GameObject Position: {transform.position}");
+            Debug.Log($"Camera Position: {mainCamera.transform.position}");
+        }
+    }
+    
+    void AdjustCameraToSeeObject()
+    {
+        if (mainCamera != null)
+        {
+            // Position camera slightly above and behind the object
+            Vector3 cameraPosition = transform.position - Vector3.forward * cameraOffset + Vector3.up * 2;
+            mainCamera.transform.position = cameraPosition;
+            mainCamera.transform.LookAt(transform.position);
+        }
+        else
+        {
+            Debug.LogError("No main camera found in the scene!");
+        }
     }
 
     void FixedUpdate()
@@ -65,6 +94,8 @@ public class GravityController : MonoBehaviour
             AdjustGravity();
         }
     }
+    
+    
 
     // Method to adjust the gravity settings based on the selected planet
     private void AdjustGravity()
@@ -166,5 +197,11 @@ public class GravityController : MonoBehaviour
 
         // Deactivate gravity
         DeactivateGravity();
+        
+        if (debugMode)
+        {
+            AdjustCameraToSeeObject();
+            Debug.Log($"Reset Position - GameObject at: {transform.position}");
+        }
     }
 }
