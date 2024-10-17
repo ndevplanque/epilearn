@@ -1271,7 +1271,7 @@ PrefabInstance:
     - target: {fileID: 4816185443643780972, guid: 34600599cf953476bbc466573f2a6b3b,
         type: 3}
       propertyPath: initialDirectionEffectMultiplier
-      value: 1
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 6582375875922516110, guid: 34600599cf953476bbc466573f2a6b3b,
         type: 3}
