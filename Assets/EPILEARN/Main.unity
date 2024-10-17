@@ -1270,6 +1270,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4816185443643780972, guid: 34600599cf953476bbc466573f2a6b3b,
         type: 3}
+      propertyPath: impactSound
+      value: 
+      objectReference: {fileID: 8300000, guid: d3b23a40b531543ddbf52eb1700733f8, type: 3}
+    - target: {fileID: 4816185443643780972, guid: 34600599cf953476bbc466573f2a6b3b,
+        type: 3}
+      propertyPath: selectedPlanet
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4816185443643780972, guid: 34600599cf953476bbc466573f2a6b3b,
+        type: 3}
       propertyPath: initialDirectionEffectMultiplier
       value: 0.1
       objectReference: {fileID: 0}
