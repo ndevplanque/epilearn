@@ -26,6 +26,7 @@ public class GravityController : MonoBehaviour
     }
 
     // The currently selected planet, default is Earth  
+    [HideInInspector] 
     public Planet selectedPlanet = Planet.Earth;
     // Customize direction force
     public float initialDirectionEffectMultiplier;
