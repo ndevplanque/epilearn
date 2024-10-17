@@ -2,6 +2,14 @@ using UnityEngine;
 
 public class GravityController : MonoBehaviour
 {
+    
+    [Header("Audio Settings")]
+    public AudioClip impactSound;      // Assign this in the Unity Inspector
+    private AudioSource audioSource;
+    private bool isFalling = false;
+
+
+    
     // Enum to represent different planets with varying gravity  
     public enum Planet
     {
@@ -41,6 +49,12 @@ public class GravityController : MonoBehaviour
         // Initialize gravity based on selected planet  
         SetGravityState(gravityOn);
         
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        
         if (debugMode)
         {
             // Ensure the object is visible
@@ -76,6 +90,20 @@ public class GravityController : MonoBehaviour
 
             // Apply the computed local gravity to the Rigidbody  
             rb.AddForce(localGravity - Physics.gravity * rb.mass, ForceMode.Acceleration);
+            if (!isFalling && rb.velocity.y < -0.1f)
+            {
+                isFalling = true;
+
+            }
+            // Stop falling sound if object is not falling anymore
+            else if (isFalling && rb.velocity.y > -0.1f)
+            {
+                isFalling = false;
+                if (audioSource.isPlaying)
+                {
+                    audioSource.Stop();
+                }
+            }
         }
         else if (rb == null)
         {
@@ -141,6 +169,73 @@ public class GravityController : MonoBehaviour
         Physics.gravity = new Vector3(0.0f, -9.81f * gravityScale, 0.0f);
     }
 
+    
+    void OnCollisionEnter(Collision collision)
+    {
+        float gravityScale = 1.0f;
+
+        // Determine gravity scale based on the selected planet
+        switch (selectedPlanet)
+        {
+            case Planet.Mercury:
+                gravityScale = 0.377f;
+                break;
+            case Planet.Venus:
+                gravityScale = 0.905f;
+                break;
+            case Planet.Earth:
+                gravityScale = 1.0f;
+                break;
+            case Planet.Moon:
+                gravityScale = 0.165f;
+                break;
+            case Planet.Mars:
+                gravityScale = 0.378f;
+                break;
+            case Planet.Jupiter:
+                gravityScale = 2.53f;
+                break;
+            case Planet.Saturn:
+                gravityScale = 1.06f;
+                break;
+            case Planet.Uranus:
+                gravityScale = 0.886f;
+                break;
+            case Planet.Neptune:
+                gravityScale = 1.14f;
+                break;
+            case Planet.Pluto:
+                gravityScale = 0.063f;
+                break;
+        }
+
+        // Adjust the minimum collision speed based on the gravity of the planet
+        float collisionThreshold = 1.0f * gravityScale;  // Scale threshold by gravity
+
+        // Play impact sound if the collision speed is high enough
+        if (collision.relativeVelocity.magnitude > collisionThreshold)
+        {
+            if (audioSource.isPlaying && audioSource.clip != impactSound)
+            {
+                audioSource.Stop();
+            }
+
+            if (impactSound != null)
+            {
+                audioSource.loop = false;
+                audioSource.clip = impactSound;
+
+                // Adjust volume based on the relative velocity to make it more natural
+                audioSource.volume = Mathf.Clamp01(collision.relativeVelocity.magnitude / 10f);  // Scale between 0 and 1
+                audioSource.Play();
+            }
+
+            isFalling = false;
+        }
+    }
+
+
+    
     // Function to activate the gravity
     public void ActivateGravity()
     {
@@ -197,6 +292,11 @@ public class GravityController : MonoBehaviour
 
         // Deactivate gravity
         DeactivateGravity();
+        if (audioSource != null && audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
+        isFalling = false;
         
         if (debugMode)
         {
