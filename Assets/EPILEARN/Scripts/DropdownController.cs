@@ -1,12 +1,13 @@
-using UnityEngine;
+using System.Collections.Generic;
 using TMPro;
+using UnityEngine;
 
 public class TMPDropdownController : MonoBehaviour
 {
-    public TMP_Dropdown planetDropdown;  // Le composant Dropdown de TextMesh Pro
-    public GravityController gravityController;  // Référence à votre script GravityController
+    public TMP_Dropdown planetDropdown; // Le composant Dropdown de TextMesh Pro
+    public GravityController gravityController; // Référence à votre script GravityController
 
-    void Start()
+    private void Start()
     {
         // Assurez-vous que le Dropdown et le GravityController sont assignés
         if (planetDropdown == null || gravityController == null)
@@ -16,7 +17,8 @@ public class TMPDropdownController : MonoBehaviour
         }
 
         // Remplissez le Dropdown avec les noms de planètes (assurez-vous que cela correspond à l'ordre de l'énum)
-        planetDropdown.AddOptions(new System.Collections.Generic.List<string> {
+        planetDropdown.AddOptions(new List<string>
+        {
             "Mercury", "Venus", "Earth", "Moon", "Mars",
             "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"
         });
@@ -28,7 +30,7 @@ public class TMPDropdownController : MonoBehaviour
         planetDropdown.onValueChanged.AddListener(OnDropdownValueChanged);
     }
 
-    void OnDropdownValueChanged(int value)
+    private void OnDropdownValueChanged(int value)
     {
         // Convertir la valeur sélectionnée dans l'énumération Planet et changer les réglages de gravité
         gravityController.SwitchPlanet((GravityController.Planet)value);
