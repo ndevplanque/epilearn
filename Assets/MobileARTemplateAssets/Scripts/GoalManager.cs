@@ -132,31 +132,31 @@ public class GoalManager : MonoBehaviour
         set => m_GreetingPrompt = value;
     }
 
-    /*[Tooltip("The Options Button to enable once the greeting prompt is dismissed.")]
+     /*[Tooltip("The Options Button to enable once the greeting prompt is dismissed.")]
+     [SerializeField]
+     GameObject m_OptionsButton;
+
+     /// <summary>
+     /// The Options Button to enable once the greeting prompt is dismissed.
+     /// </summary>
+     public GameObject optionsButton
+     {
+         get => m_OptionsButton;
+         set => m_OptionsButton = value;
+     }*/
+
+    [Tooltip("The Reset Button to enable once the greeting prompt is dismissed.")]
     [SerializeField]
-    GameObject m_OptionsButton;
+    GameObject m_ResetButton;
 
     /// <summary>
-    /// The Options Button to enable once the greeting prompt is dismissed.
-    /// </summary>
-    public GameObject optionsButton
-    {
-        get => m_OptionsButton;
-        set => m_OptionsButton = value;
-    }*/
-
-    /*[Tooltip("The Create Button to enable once the greeting prompt is dismissed.")]
-    [SerializeField]
-    GameObject m_CreateButton;
-
-    /// <summary>
-    /// The Create Button to enable once the greeting prompt is dismissed.
+    /// The Reset Button to enable once the greeting prompt is dismissed.
     /// </summary>
     public GameObject createButton
     {
-        get => m_CreateButton;
-        set => m_CreateButton = value;
-    }*/
+        get => m_ResetButton;
+        set => m_ResetButton = value;
+    }
 
     [Tooltip("The AR Template Menu Manager object to enable once the greeting prompt is dismissed.")]
     [SerializeField]
@@ -232,7 +232,7 @@ public class GoalManager : MonoBehaviour
         else if (m_CurrentGoal.CurrentGoal == OnboardingGoals.TapSurface)
         {
             m_SurfacesTapped = 0;
-            m_ObjectSpawner.objectSpawned += OnObjectSpawned;
+            // m_ObjectSpawner.objectSpawned += OnObjectSpawned;
         }
     }
 
@@ -306,7 +306,7 @@ public class GoalManager : MonoBehaviour
 
         m_GreetingPrompt.SetActive(false);
         // m_OptionsButton.SetActive(true);
-        // m_CreateButton.SetActive(true);
+        m_ResetButton.SetActive(true);
         m_MenuManager.enabled = true;
 
         for (int i = startingStep; i < m_StepList.Count; i++)
