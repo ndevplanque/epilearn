@@ -55,17 +55,12 @@ public class GoalManager : MonoBehaviour
         /// <summary>
         /// Tap a surface to spawn an object
         /// </summary>
-        TapSurface,
+        TapApple,
 
         /// <summary>
         /// Show movement hints
         /// </summary>
-        Hints,
-
-        /// <summary>
-        /// Show scale and rotate hints
-        /// </summary>
-        Scale
+        TapResetButton
     }
 
     /// <summary>
@@ -171,7 +166,6 @@ public class GoalManager : MonoBehaviour
     //     set => m_MenuManager = value;
     // }
 
-    const int k_NumberOfSurfacesTappedToCompleteGoal = 1;
 
     Queue<Goal> m_OnboardingGoals;
     Coroutine m_CurrentCoroutine;
@@ -182,7 +176,7 @@ public class GoalManager : MonoBehaviour
 
     void Update()
     {
-        if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame && !m_AllGoalsFinished && (m_CurrentGoal.CurrentGoal == OnboardingGoals.FindSurfaces || m_CurrentGoal.CurrentGoal == OnboardingGoals.Hints || m_CurrentGoal.CurrentGoal == OnboardingGoals.Scale))
+        if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame && !m_AllGoalsFinished && (m_CurrentGoal.CurrentGoal == OnboardingGoals.FindSurfaces))
         {
             if (m_CurrentCoroutine != null)
             {
@@ -194,6 +188,7 @@ public class GoalManager : MonoBehaviour
 
     void CompleteGoal()
     {
+        Debug.Log($"Completing Goal: {m_CurrentGoal.CurrentGoal}");
         // if (m_CurrentGoal.CurrentGoal == OnboardingGoals.TapSurface)
         //     m_ObjectSpawner.objectSpawned -= OnObjectSpawned;
 
@@ -217,23 +212,17 @@ public class GoalManager : MonoBehaviour
 
     void PreprocessGoal()
     {
+        Debug.Log($"Preprocessing Goal: {m_CurrentGoal.CurrentGoal}");
         if (m_CurrentGoal.CurrentGoal == OnboardingGoals.FindSurfaces)
-        {
-            m_CurrentCoroutine = StartCoroutine(WaitUntilNextCard(5f));
-        }
-        else if (m_CurrentGoal.CurrentGoal == OnboardingGoals.Hints)
         {
             m_CurrentCoroutine = StartCoroutine(WaitUntilNextCard(6f));
         }
-        else if (m_CurrentGoal.CurrentGoal == OnboardingGoals.Scale)
+        else if (m_CurrentGoal.CurrentGoal == OnboardingGoals.TapResetButton)
         {
-            m_CurrentCoroutine = StartCoroutine(WaitUntilNextCard(8f));
+            // m_CurrentCoroutine = StartCoroutine(WaitUntilNextCard(6f));
+            m_ResetButton.SetActive(true);
         }
-        else if (m_CurrentGoal.CurrentGoal == OnboardingGoals.TapSurface)
-        {
-            m_SurfacesTapped = 0;
-            // m_ObjectSpawner.objectSpawned += OnObjectSpawned;
-        }
+
     }
 
     /// <summary>
@@ -260,11 +249,18 @@ public class GoalManager : MonoBehaviour
     {
         CompleteGoal();
     }
-
-    void OnObjectSpawned(GameObject spawnedObject)
+    
+    public void AppleTapped()
     {
-        m_SurfacesTapped++;
-        if (m_CurrentGoal.CurrentGoal == OnboardingGoals.TapSurface && m_SurfacesTapped >= k_NumberOfSurfacesTappedToCompleteGoal)
+        if (m_CurrentGoal.CurrentGoal == OnboardingGoals.TapApple)
+        {
+            CompleteGoal();
+        }
+    }
+    
+    public void ResetButtonTapped()
+    {
+        if (m_CurrentGoal.CurrentGoal == OnboardingGoals.TapResetButton)
         {
             CompleteGoal();
         }
@@ -290,15 +286,11 @@ public class GoalManager : MonoBehaviour
 
         int startingStep = m_AllGoalsFinished ? 1 : 0;
 
-        var tapSurfaceGoal = new Goal(OnboardingGoals.TapSurface);
-        var translateHintsGoal = new Goal(OnboardingGoals.Hints);
-        var scaleHintsGoal = new Goal(OnboardingGoals.Scale);
-        var rotateHintsGoal = new Goal(OnboardingGoals.Hints);
+        var tapAppleGoal = new Goal(OnboardingGoals.TapApple);
+        var tapResetButtonGoal = new Goal(OnboardingGoals.TapResetButton);
 
-        m_OnboardingGoals.Enqueue(tapSurfaceGoal);
-        m_OnboardingGoals.Enqueue(translateHintsGoal);
-        m_OnboardingGoals.Enqueue(scaleHintsGoal);
-        m_OnboardingGoals.Enqueue(rotateHintsGoal);
+        m_OnboardingGoals.Enqueue(tapAppleGoal);
+        m_OnboardingGoals.Enqueue(tapResetButtonGoal);
 
         m_CurrentGoal = m_OnboardingGoals.Dequeue();
         m_AllGoalsFinished = false;
@@ -306,7 +298,6 @@ public class GoalManager : MonoBehaviour
 
         m_GreetingPrompt.SetActive(false);
         // m_OptionsButton.SetActive(true);
-        m_ResetButton.SetActive(true);
         // m_MenuManager.enabled = true;
 
         for (int i = startingStep; i < m_StepList.Count; i++)

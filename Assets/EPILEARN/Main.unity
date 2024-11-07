@@ -624,7 +624,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1728474603}
         m_TargetAssemblyTypeName: GoalManager, Assembly-CSharp
-        m_MethodName: ForceCompleteGoal
+        m_MethodName: AppleTapped
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -764,6 +764,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30f0e07d95a4d497bbc3dbd22d792191, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1842868548 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5998360195306970976, guid: de843879413af46ffb908833005917ec,
+    type: 3}
+  m_PrefabInstance: {fileID: 1998187667}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1998187667
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -897,6 +903,21 @@ PrefabInstance:
       propertyPath: m_Color.a
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5872741534916127193, guid: de843879413af46ffb908833005917ec,
+        type: 3}
+      propertyPath: m_StepList.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5872741534916127193, guid: de843879413af46ffb908833005917ec,
+        type: 3}
+      propertyPath: m_StepList.Array.data[2].stepObject
+      value: 
+      objectReference: {fileID: 1842868548}
+    - target: {fileID: 5872741534916127193, guid: de843879413af46ffb908833005917ec,
+        type: 3}
+      propertyPath: m_StepList.Array.data[3].stepObject
+      value: 
+      objectReference: {fileID: 1842868548}
     - target: {fileID: 6165864626049606377, guid: de843879413af46ffb908833005917ec,
         type: 3}
       propertyPath: spriteSequence.Array.size
@@ -945,9 +966,44 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8903899059128715126, guid: de843879413af46ffb908833005917ec,
         type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8903899059128715126, guid: de843879413af46ffb908833005917ec,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8903899059128715126, guid: de843879413af46ffb908833005917ec,
+        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1315276437}
+    - target: {fileID: 8903899059128715126, guid: de843879413af46ffb908833005917ec,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1728474603}
+    - target: {fileID: 8903899059128715126, guid: de843879413af46ffb908833005917ec,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8903899059128715126, guid: de843879413af46ffb908833005917ec,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: ResetButtonTapped
+      objectReference: {fileID: 0}
+    - target: {fileID: 8903899059128715126, guid: de843879413af46ffb908833005917ec,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: GoalManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8903899059128715126, guid: de843879413af46ffb908833005917ec,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
