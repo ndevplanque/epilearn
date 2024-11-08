@@ -143,6 +143,11 @@ public class GoalManager : MonoBehaviour
     [Tooltip("The Reset Button to enable once the greeting prompt is dismissed.")]
     [SerializeField]
     GameObject m_ResetButton;
+    
+    [Tooltip("The Planet Selector Button to enable once the greeting prompt is dismissed.")]
+    [SerializeField]
+    GameObject m_PlanetSelectorButton;
+
 
     /// <summary>
     /// The Reset Button to enable once the greeting prompt is dismissed.
@@ -263,6 +268,7 @@ public class GoalManager : MonoBehaviour
         if (m_CurrentGoal.CurrentGoal == OnboardingGoals.TapResetButton)
         {
             CompleteGoal();
+            m_PlanetSelectorButton.SetActive(true);
         }
     }
 

@@ -36,6 +36,11 @@ public class GravityController : MonoBehaviour
     private Camera mainCamera;
 
     private Rigidbody rb;
+    
+    
+    [Tooltip("The Reset Button to enable once the greeting prompt is dismissed.")]
+    [SerializeField]
+    GameObject resetButton;
 
     private void Start()
     {
@@ -169,7 +174,10 @@ public class GravityController : MonoBehaviour
     {
         selectedPlanet = newPlanet;
 
-        if (gravityOn) AdjustGravity();
+        if (!gravityOn) return;
+        
+        AdjustGravity();
+        ResetPosition();
     }
 
 
@@ -221,7 +229,8 @@ public class GravityController : MonoBehaviour
     // Function to activate the gravity
     public void ActivateGravity()
     {
-        if (gravityOn) ResetPosition();
+        resetButton.SetActive(true);
+        // if (gravityOn) ResetPosition();
 
         gravityOn = true;
         AdjustGravity();
@@ -237,6 +246,7 @@ public class GravityController : MonoBehaviour
     // Function to deactivate the gravity
     public void DeactivateGravity()
     {
+        resetButton.SetActive(false);
         gravityOn = false;
         Physics.gravity = Vector3.zero; // Set global gravity to zero
     }
@@ -255,6 +265,7 @@ public class GravityController : MonoBehaviour
     // Function to reset position and pause gravity
     public void ResetPosition()
     {
+        resetButton.SetActive(false);
         // Reset the object's position to the initial position
         transform.position = initialPosition;
 
