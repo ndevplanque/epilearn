@@ -11,6 +11,9 @@ public class SpriteTransitionController : MonoBehaviour
     public Image displayImage;
     public float transitionDuration = 0.5f;
 
+    [Header("Overlay for color transitions")] [Tooltip("An overlay used to transition colors.")] [SerializeField]
+    private Image colorOverlay;
+
     [Header("End Action")] public UnityEvent onSequenceComplete;
 
     [Tooltip("The greeting prompt Game Object to show when onboarding begins.")] [SerializeField]
@@ -19,15 +22,17 @@ public class SpriteTransitionController : MonoBehaviour
     [Tooltip("Intro prompt.")] [SerializeField]
     private GameObject IntroPrompt;
 
-    private int currentSpriteIndex; // Start at 0 for the first sprite
+    // Color fade effect
+    [Tooltip("Color fade effect")] [SerializeField]
+    private Color fadeColor = Color.black;
+
+    private int currentSpriteIndex;
     private bool isInitialized;
 
-    // This method must be called before using the controller
     public void Initialize()
     {
         m_GreetingPrompt.SetActive(false);
 
-        // Initial checks
         if (spriteSequence == null || spriteSequence.Count == 0)
         {
             Debug.LogError("The sprite list is empty. Please configure the sprites.");
@@ -40,8 +45,18 @@ public class SpriteTransitionController : MonoBehaviour
             return;
         }
 
-        // Immediately show the first sprite with a fade-in effect
-        StartCoroutine(TransitionFromTransparentToSprite(spriteSequence[currentSpriteIndex]));
+        if (colorOverlay == null)
+        {
+            Debug.LogError("No reference overlay has been assigned.");
+            return;
+        }
+
+        // Ensure the color overlay starts as opaque
+        colorOverlay.color = new Color(fadeColor.r, fadeColor.g, fadeColor.b, 1);
+
+        // Show first sprite then fade in
+        displayImage.sprite = spriteSequence[0];
+        StartCoroutine(TransitionFromOverlayToSprite());
 
         isInitialized = true;
     }
@@ -54,99 +69,88 @@ public class SpriteTransitionController : MonoBehaviour
             return;
         }
 
-        // Increment sprite index
         currentSpriteIndex++;
 
-        // Check if we have reached the end of the sequence
         if (currentSpriteIndex >= spriteSequence.Count)
         {
-            // Start the transition to transparent, and then execute end actions
             StartCoroutine(TransitionToTransparentAndEnd());
             return;
         }
 
-        // Start the transition to the next sprite
         StartCoroutine(TransitionToNextSprite());
     }
 
-    private IEnumerator TransitionFromTransparentToSprite(Sprite sprite)
+    private IEnumerator TransitionFromOverlayToSprite()
     {
-        var elapsedTime = 0f;
-        displayImage.sprite = sprite;
+        // Ensure the start of the overlay fade transition
+        yield return StartCoroutine(FadeOverlayToAlpha(0));
 
-        while (elapsedTime < transitionDuration)
-        {
-            elapsedTime += Time.deltaTime;
-            var alpha = Mathf.Clamp01(elapsedTime / transitionDuration);
-            displayImage.color = new Color(1, 1, 1, alpha); // Transition from transparent to opaque
-            yield return null;
-        }
+        // Ensure the final state is completely opaque
+        displayImage.color = new Color(1, 1, 1, 1);
     }
 
     private IEnumerator TransitionToNextSprite()
     {
-        // Get the initial color
-        var initialColor = displayImage.color;
+        yield return StartCoroutine(FadeOverlayToAlpha(1)); // Fade overlay to specified color
 
-        // Fade to black
-        yield return StartCoroutine(FadeToColor(Color.black));
-
-        // Change the image
         displayImage.sprite = spriteSequence[currentSpriteIndex];
 
-        // Fade from black back to the initial color
-        yield return StartCoroutine(FadeFromColor(Color.black, initialColor));
+        yield return StartCoroutine(FadeOverlayToAlpha(0)); // Fade overlay back to transparency
     }
 
     private IEnumerator TransitionToTransparentAndEnd()
     {
-        var elapsedTime = 0f;
-        var startColor = displayImage.color;
+        // Ensure both overlay and image start fully opaque
+        colorOverlay.color = new Color(fadeColor.r, fadeColor.g, fadeColor.b, 1);
+        displayImage.color = new Color(1, 1, 1, 1);
 
-        while (elapsedTime < transitionDuration)
-        {
-            elapsedTime += Time.deltaTime;
-            var alpha = 1 - Mathf.Clamp01(elapsedTime / transitionDuration);
-            displayImage.color =
-                new Color(startColor.r, startColor.g, startColor.b, alpha); // Transition towards transparency
-            yield return null;
-        }
+        // Fade both the overlay and the image out
+        yield return StartCoroutine(FadeOverlayAndImageToTransparent());
 
-        // Actions to perform when the sequence is complete
+        // Invoke the completion event
         onSequenceComplete?.Invoke();
         IntroPrompt.SetActive(false);
     }
 
-    private IEnumerator FadeToColor(Color targetColor)
+
+    private IEnumerator FadeOverlayAndImageToTransparent()
     {
-        var initialColor = displayImage.color;
         var elapsedTime = 0f;
+        var initialOverlayAlpha = colorOverlay.color.a;
+        var initialImageAlpha = displayImage.color.a;
 
         while (elapsedTime < transitionDuration)
         {
             elapsedTime += Time.deltaTime;
-            // Interpolate the color
-            displayImage.color = Color.Lerp(initialColor, targetColor, elapsedTime / transitionDuration);
+            var newOverlayAlpha = Mathf.Lerp(initialOverlayAlpha, 0f, elapsedTime / transitionDuration);
+            var newImageAlpha = Mathf.Lerp(initialImageAlpha, 0f, elapsedTime / transitionDuration);
+
+            colorOverlay.color = new Color(fadeColor.r, fadeColor.g, fadeColor.b, newOverlayAlpha);
+            displayImage.color = new Color(1, 1, 1, newImageAlpha);
+
             yield return null;
         }
 
-        // Ensure target color is set
-        displayImage.color = targetColor;
+        // Ensure both are completely transparent at the end
+        colorOverlay.color = new Color(fadeColor.r, fadeColor.g, fadeColor.b, 0f);
+        displayImage.color = new Color(1, 1, 1, 0f);
     }
 
-    private IEnumerator FadeFromColor(Color fromColor, Color toColor)
+
+    private IEnumerator FadeOverlayToAlpha(float targetAlpha)
     {
         var elapsedTime = 0f;
+        var initialAlpha = colorOverlay.color.a;
 
         while (elapsedTime < transitionDuration)
         {
             elapsedTime += Time.deltaTime;
-            // Interpolate the color from one to another
-            displayImage.color = Color.Lerp(fromColor, toColor, elapsedTime / transitionDuration);
+            var newAlpha = Mathf.Lerp(initialAlpha, targetAlpha, elapsedTime / transitionDuration);
+            colorOverlay.color = new Color(fadeColor.r, fadeColor.g, fadeColor.b, newAlpha);
             yield return null;
         }
 
-        // Ensure final color is set
-        displayImage.color = toColor;
+        // Ensure target alpha is set
+        colorOverlay.color = new Color(fadeColor.r, fadeColor.g, fadeColor.b, targetAlpha);
     }
 }
