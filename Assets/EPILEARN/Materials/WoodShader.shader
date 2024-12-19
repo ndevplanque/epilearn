@@ -63,7 +63,8 @@ Shader "Custom/WoodShader"
                 float ringPattern = rings(i.uv, _RingFrequency);
                 float colorVariation = noise(i.uv);
                 float3 woodColor = lerp(_LightWoodColor.rgb, _DarkWoodColor.rgb, colorVariation);
-                return float4(woodColor * ringPattern, 1.0);
+                float finalColorIntensity = ringPattern * (1.0 - colorVariation) + colorVariation;
+                return float4(woodColor * finalColorIntensity, 1.0);
             }
             ENDCG
         }
