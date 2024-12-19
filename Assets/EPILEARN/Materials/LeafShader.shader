@@ -6,8 +6,7 @@ Shader "Custom/LeafShader"
         _NoiseScale ("Noise Scale", Float) = 5.0
         _AmbientColor ("Ambient Color", Color) = (0.2, 0.3, 0.2, 1.0)
         _LightDirection ("Light Direction", Vector) = (0.0, 1.0, 0.0)
-        _Transparency ("Transparency", Float) = 0.5
-        _SpecularIntensity ("Specular Intensity", Float) = 0.3
+        _RingFrequency ("Ring Frequency", Float) = 10.0
     }
     SubShader
     {
@@ -40,15 +39,13 @@ Shader "Custom/LeafShader"
             float _NoiseScale;
             float4 _AmbientColor;
             float3 _LightDirection;
-            float _Transparency;
-            float _SpecularIntensity;
+            float _RingFrequency;
 
             v2f vert (appdata_t v)
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = v.uv * _NoiseScale;
-                o.normal = v.normal;
                 return o;
             }
 
@@ -57,26 +54,24 @@ Shader "Custom/LeafShader"
                 return frac(sin(dot(coord.xy, float2(12.9898,78.233))) * 43758.5453);
             }
 
+            float rings(float2 coord, float frequency)
+            {
+                float radius = length(coord - 0.5);
+                return abs(sin(radius * frequency));
+            }
+
             fixed4 frag (v2f i) : SV_Target
             {
+                float ringPattern = rings(i.uv, _RingFrequency);
                 float n = noise(i.uv);
                 
-                // Normal perturbation
-                float3 norm = normalize(i.normal);
-                float lightIntensity = dot(norm, _LightDirection);
-                lightIntensity = max(lightIntensity, 0.0);
-
-                // Adjust leaf color with noise and ambient color
+                // Variation de couleur basée sur le bruit
                 float3 leafColor = _BaseColor.rgb * n + _AmbientColor.rgb * (1.0 - n);
                 
-                // Specular effect
-                float specular = pow(max(dot(norm, _LightDirection), 0.0), 16) * _SpecularIntensity;
-                leafColor += specular;
-
-                // Adding transparency to simulate leaf thickness
-                leafColor *= _Transparency;
-
-                return float4(leafColor, 1.0);
+                // Intégration du motif circulaire pour le feuillage
+                float finalColorIntensity = ringPattern * (1.0 - n) + n;
+                
+                return float4(leafColor * finalColorIntensity, 1.0);
             }
             ENDCG
         }

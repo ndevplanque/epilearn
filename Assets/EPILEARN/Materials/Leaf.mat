@@ -39,6 +39,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _NoiseScale: 1
+    - _RingFrequency: 150
     m_Colors:
     - _AmbientColor: {r: 0.030522196, g: 0.16981131, b: 0.028034883, a: 1}
     - _BaseColor: {r: 0.23740655, g: 0.5188679, b: 0.25826344, a: 1}
