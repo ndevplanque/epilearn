@@ -129,7 +129,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _AmbientColor: {r: 0.030522196, g: 0.16981131, b: 0.028034883, a: 1}
+    - _AmbientColor: {r: 0.0039308188, g: 0.14150941, b: 0, a: 1}
     - _BaseColor: {r: 0.23740655, g: 0.5188679, b: 0.25826344, a: 1}
     - _Color: {r: 0.23740652, g: 0.51886785, b: 0.2582634, a: 1}
     - _DarkLeafColor: {r: 0.17999998, g: 0.45, b: 0.07999996, a: 1}
