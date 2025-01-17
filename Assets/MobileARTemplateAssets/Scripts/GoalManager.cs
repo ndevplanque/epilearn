@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.XR.Interaction.Toolkit.Samples.ARStarterAssets;
 using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
 
 /// <summary>
@@ -37,6 +38,8 @@ public struct Goal
 /// </summary>
 public class GoalManager : MonoBehaviour
 {
+    readonly List<ARFeatheredPlaneMeshVisualizerCompanion> featheredPlaneMeshVisualizerCompanions = new List<ARFeatheredPlaneMeshVisualizerCompanion>();
+
     /// <summary>
     /// State representation for the onboarding goals for the GoalManager.
     /// </summary>
@@ -158,6 +161,19 @@ public class GoalManager : MonoBehaviour
         set => m_ResetButton = value;
     }
 
+    [SerializeField]
+    [Tooltip("The plane prefab with shadows and debug visuals.")]
+    ARTemplateMenuManager m_ARMenu;
+
+    /// <summary>
+    /// The plane prefab with shadows and debug visuals.
+    /// </summary>
+    public ARTemplateMenuManager arTemplateMenuManager
+    {
+        get => m_ARMenu;
+        set => m_ARMenu = value;
+    }
+
     // [Tooltip("The AR Template Menu Manager object to enable once the greeting prompt is dismissed.")]
     // [SerializeField]
     // ARTemplateMenuManager m_MenuManager;
@@ -221,6 +237,10 @@ public class GoalManager : MonoBehaviour
         if (m_CurrentGoal.CurrentGoal == OnboardingGoals.FindSurfaces)
         {
             m_CurrentCoroutine = StartCoroutine(WaitUntilNextCard(6f));
+        }
+        else if (m_CurrentGoal.CurrentGoal == OnboardingGoals.TapApple)
+        {
+            arTemplateMenuManager.ShowDebugPlane(false);
         }
         else if (m_CurrentGoal.CurrentGoal == OnboardingGoals.TapResetButton)
         {
