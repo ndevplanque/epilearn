@@ -104,19 +104,6 @@ public class GoalManager : MonoBehaviour
         set => m_StepList = value;
     }
 
-    /*[Tooltip("Object Spawner used to detect whether the spawning goal has been achieved.")]
-    [SerializeField]
-    ObjectSpawner m_ObjectSpawner;
-
-    /// <summary>
-    /// Object Spawner used to detect whether the spawning goal has been achieved.
-    /// </summary>
-    public ObjectSpawner objectSpawner
-    {
-        get => m_ObjectSpawner;
-        set => m_ObjectSpawner = value;
-    }*/
-
     [Tooltip("The greeting prompt Game Object to show when onboarding begins.")]
     [SerializeField]
     GameObject m_GreetingPrompt;
@@ -130,19 +117,6 @@ public class GoalManager : MonoBehaviour
         set => m_GreetingPrompt = value;
     }
 
-     /*[Tooltip("The Options Button to enable once the greeting prompt is dismissed.")]
-     [SerializeField]
-     GameObject m_OptionsButton;
-
-     /// <summary>
-     /// The Options Button to enable once the greeting prompt is dismissed.
-     /// </summary>
-     public GameObject optionsButton
-     {
-         get => m_OptionsButton;
-         set => m_OptionsButton = value;
-     }*/
-
     [Tooltip("The Reset Button to enable once the greeting prompt is dismissed.")]
     [SerializeField]
     GameObject m_ResetButton;
@@ -151,42 +125,18 @@ public class GoalManager : MonoBehaviour
     [SerializeField]
     GameObject m_PlanetSelectorButton;
 
-
-    /// <summary>
-    /// The Reset Button to enable once the greeting prompt is dismissed.
-    /// </summary>
-    public GameObject createButton
-    {
-        get => m_ResetButton;
-        set => m_ResetButton = value;
-    }
-
+    [Tooltip("The AR Template Menu Manager object to enable once the greeting prompt is dismissed.")]
     [SerializeField]
-    [Tooltip("The plane prefab with shadows and debug visuals.")]
-    ARTemplateMenuManager m_ARMenu;
+    ARTemplateMenuManager m_MenuManager;
 
     /// <summary>
-    /// The plane prefab with shadows and debug visuals.
+    /// The AR Template Menu Manager object to enable once the greeting prompt is dismissed.
     /// </summary>
-    public ARTemplateMenuManager arTemplateMenuManager
+    public ARTemplateMenuManager menuManager
     {
-        get => m_ARMenu;
-        set => m_ARMenu = value;
+        get => m_MenuManager;
+        set => m_MenuManager = value;
     }
-
-    // [Tooltip("The AR Template Menu Manager object to enable once the greeting prompt is dismissed.")]
-    // [SerializeField]
-    // ARTemplateMenuManager m_MenuManager;
-    //
-    // /// <summary>
-    // /// The AR Template Menu Manager object to enable once the greeting prompt is dismissed.
-    // /// </summary>
-    // public ARTemplateMenuManager menuManager
-    // {
-    //     get => m_MenuManager;
-    //     set => m_MenuManager = value;
-    // }
-
 
     Queue<Goal> m_OnboardingGoals;
     Coroutine m_CurrentCoroutine;
@@ -194,6 +144,7 @@ public class GoalManager : MonoBehaviour
     bool m_AllGoalsFinished;
     int m_SurfacesTapped;
     int m_CurrentGoalIndex = 0;
+
 
     void Update()
     {
@@ -208,10 +159,7 @@ public class GoalManager : MonoBehaviour
     }
 
     void CompleteGoal()
-    {
-        Debug.Log($"Completing Goal: {m_CurrentGoal.CurrentGoal}");
-        // if (m_CurrentGoal.CurrentGoal == OnboardingGoals.TapSurface)
-        //     m_ObjectSpawner.objectSpawned -= OnObjectSpawned;
+    {        Debug.Log($"Completing Goal: {m_CurrentGoal.CurrentGoal}");
 
         m_CurrentGoal.Completed = true;
         m_CurrentGoalIndex++;
@@ -240,11 +188,10 @@ public class GoalManager : MonoBehaviour
         }
         else if (m_CurrentGoal.CurrentGoal == OnboardingGoals.TapApple)
         {
-            arTemplateMenuManager.ShowDebugPlane(false);
+            m_MenuManager.ShowHideDebugPlane();
         }
         else if (m_CurrentGoal.CurrentGoal == OnboardingGoals.TapResetButton)
         {
-            // m_CurrentCoroutine = StartCoroutine(WaitUntilNextCard(6f));
             m_ResetButton.SetActive(true);
         }
 
@@ -285,6 +232,7 @@ public class GoalManager : MonoBehaviour
     
     public void ResetButtonTapped()
     {
+        if (m_AllGoalsFinished) return;
         if (m_CurrentGoal.CurrentGoal == OnboardingGoals.TapResetButton)
         {
             CompleteGoal();
@@ -323,8 +271,8 @@ public class GoalManager : MonoBehaviour
         m_CurrentGoalIndex = startingStep;
 
         m_GreetingPrompt.SetActive(false);
-        // m_OptionsButton.SetActive(true);
-        // m_MenuManager.enabled = true;
+        m_ResetButton.SetActive(true);
+        m_MenuManager.enabled = true;
 
         for (int i = startingStep; i < m_StepList.Count; i++)
         {

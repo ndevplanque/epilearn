@@ -60,27 +60,23 @@ public class ARTemplateMenuManager : MonoBehaviour
     /// </summary>
     void Start()
     {
-        // Auto turn on/off debug menu. We want it initially active so it calls into 'Start', which will
-        // allow us to move the menu properties later if the debug menu is turned on.
         m_PlaneManager.planePrefab = m_DebugPlane;
     }
-
 
     /// <summary>
     /// Shows or hides the plane debug visuals.
     /// </summary>
-    public void ShowDebugPlane(bool show)
+    public void ShowHideDebugPlane()
     {
-        m_DebugPlaneSlider = show;
-        ChangePlaneVisibility(show);
-
-        // Also update the visibility of any existing planes
-        foreach (var plane in m_PlaneManager.trackables)
+        if (m_DebugPlaneSlider)
         {
-            if (plane.gameObject.activeInHierarchy)
-            {
-                plane.gameObject.SetActive(show);
-            }
+            m_DebugPlaneSlider = false;
+            ChangePlaneVisibility(false);
+        }
+        else
+        {
+            m_DebugPlaneSlider = true;
+            ChangePlaneVisibility(true);
         }
     }
 
@@ -89,15 +85,12 @@ public class ARTemplateMenuManager : MonoBehaviour
         var count = featheredPlaneMeshVisualizerCompanions.Count;
         for (int i = 0; i < count; ++i)
         {
-            var companion = featheredPlaneMeshVisualizerCompanions[i];
-            if (companion != null)
+            if (featheredPlaneMeshVisualizerCompanions[i] != null)
             {
-                companion.visualizeSurfaces = setVisible;
-                companion.gameObject.SetActive(setVisible);
+                featheredPlaneMeshVisualizerCompanions[i].visualizeSurfaces = setVisible;
             }
         }
     }
-
 
     void OnPlaneChanged(ARPlanesChangedEventArgs eventArgs)
     {
