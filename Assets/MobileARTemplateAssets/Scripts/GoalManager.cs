@@ -271,7 +271,6 @@ public class GoalManager : MonoBehaviour
         m_CurrentGoalIndex = startingStep;
 
         m_GreetingPrompt.SetActive(false);
-        m_ResetButton.SetActive(true);
         m_MenuManager.enabled = true;
 
         for (int i = startingStep; i < m_StepList.Count; i++)
