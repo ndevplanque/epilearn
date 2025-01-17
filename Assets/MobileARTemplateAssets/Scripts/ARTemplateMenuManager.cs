@@ -85,10 +85,7 @@ public class ARTemplateMenuManager : MonoBehaviour
         var count = featheredPlaneMeshVisualizerCompanions.Count;
         for (int i = 0; i < count; ++i)
         {
-            if (featheredPlaneMeshVisualizerCompanions[i] != null)
-            {
-                featheredPlaneMeshVisualizerCompanions[i].visualizeSurfaces = setVisible;
-            }
+            featheredPlaneMeshVisualizerCompanions[i].visualizeSurfaces = setVisible;
         }
     }
 
