@@ -17,7 +17,11 @@ public class GravityController : MonoBehaviour
         Pluto
     }
 
-    [Header("Audio Settings")] public AudioClip impactSound; // Assign this in the Unity Inspector
+    [Header("Audio Settings")] 
+    public AudioClip impactSound; // Impact sound effect
+    public AudioClip fallingSound; // Optional falling sound effect
+    private AudioSource impactAudioSource; // Dedicated audio source for impacts
+    private AudioSource fallingAudioSource; // Dedicated audio source for falling
 
     // The currently selected planet, default is Earth  
     [HideInInspector] public Planet selectedPlanet = Planet.Earth;
@@ -42,10 +46,15 @@ public class GravityController : MonoBehaviour
     [SerializeField]
     GameObject resetButton;
 
+    private float impactSoundCooldown = 0f;
+
     private void Start()
     {
         // Get the Rigidbody component attached to this GameObject  
         rb = GetComponent<Rigidbody>();
+        // Enable Continuous Collision Detection
+        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        
         // Store the initial position  
         initialPosition = transform.position;
         // Initialize gravity based on selected planet  
@@ -53,6 +62,13 @@ public class GravityController : MonoBehaviour
 
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+
+        // Configure audio sources
+        fallingAudioSource = GetComponent<AudioSource>();
+        if (fallingAudioSource == null) fallingAudioSource = gameObject.AddComponent<AudioSource>();
+
+        // Create a separate audio source for impacts
+        impactAudioSource = gameObject.AddComponent<AudioSource>();
 
         if (debugMode)
         {
@@ -77,12 +93,19 @@ public class GravityController : MonoBehaviour
             if (!isFalling && rb.velocity.y < -0.1f)
             {
                 isFalling = true;
+                // Play falling sound if available
+                if (fallingSound != null)
+                {
+                    fallingAudioSource.clip = fallingSound;
+                    fallingAudioSource.loop = true;
+                    fallingAudioSource.Play();
+                }
             }
-            // Stop falling sound if object is not falling anymore
             else if (isFalling && rb.velocity.y > -0.1f)
             {
                 isFalling = false;
-                if (audioSource.isPlaying) audioSource.Stop();
+                // Stop only the falling sound
+                if (fallingAudioSource.isPlaying) fallingAudioSource.Stop();
             }
         }
         else if (rb == null)
@@ -92,6 +115,14 @@ public class GravityController : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        // Mettre à jour le cooldown
+        if (impactSoundCooldown > 0)
+        {
+            impactSoundCooldown -= Time.deltaTime;
+        }
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -133,21 +164,18 @@ public class GravityController : MonoBehaviour
         }
 
         // Adjust the minimum collision speed based on the gravity of the planet
-        var collisionThreshold = 1.0f * gravityScale; // Scale threshold by gravity
+        var collisionThreshold = 1.0f * gravityScale;
 
         // Play impact sound if the collision speed is high enough
         if (collision.relativeVelocity.magnitude > collisionThreshold)
         {
-            if (audioSource.isPlaying && audioSource.clip != impactSound) audioSource.Stop();
-
             if (impactSound != null)
             {
-                audioSource.loop = false;
-                audioSource.clip = impactSound;
-
-                // Adjust volume based on the relative velocity to make it more natural
-                audioSource.volume = Mathf.Clamp01(collision.relativeVelocity.magnitude / 10f); // Scale between 0 and 1
-                audioSource.Play();
+                impactAudioSource.loop = false;
+                impactAudioSource.clip = impactSound;
+                // Adjust volume based on impact velocity
+                impactAudioSource.volume = Mathf.Clamp01(collision.relativeVelocity.magnitude / 10f);
+                impactAudioSource.Play();
             }
 
             isFalling = false;
@@ -278,7 +306,10 @@ public class GravityController : MonoBehaviour
 
         // Deactivate gravity
         DeactivateGravity();
-        if (audioSource != null && audioSource.isPlaying) audioSource.Stop();
+        // Stop both audio sources
+        if (fallingAudioSource != null && fallingAudioSource.isPlaying) fallingAudioSource.Stop();
+        if (impactAudioSource != null && impactAudioSource.isPlaying) impactAudioSource.Stop();
+        
         isFalling = false;
 
         if (debugMode)
